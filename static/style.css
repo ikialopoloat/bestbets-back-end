@@ -1,0 +1,103 @@
+
+
+body {
+    font-family: 'Arial', sans-serif; /* Choose a clean, modern font */
+    line-height: 1.6;
+    background-color: #f4f4f4; /* Light background for a clean look */
+    color: #333; /* Dark text for readability */
+    padding-top: 20px; /* Add some space at the top */
+}
+
+h1, h2, h3 {
+    color: #1a237e; /* A bold, sporty color for headings */
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Table Styling */
+table {
+    width: 90%; /* Wider table */
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    background-color: #fff; /* White background for table */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px 15px; /* More padding */
+    text-align: left;
+}
+
+th {
+    background-color: #3f51b5; /* A darker sporty color for headers */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase; /* Uppercase headers look sporty */
+}
+
+tr:nth-child(even) {
+    background-color: #e8eaf6; /* Subtle row striping */
+}
+
+tr:hover {
+    background-color: #c5cae9; /* Highlight on hover */
+}
+
+/* Radio Button Styling (Optional - can be complex to style consistently) */
+/* You might need more advanced CSS or a library for complex radio button styling */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Form Styling */
+form {
+    margin-top: 20px;
+    text-align: center; /* Center the submit button */
+}
+
+button[type="submit"] {
+    background-color: #4caf50; /* A success/action color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button[type="submit"]:hover {
+    background-color: #388e3c; /* Darken color on hover */
+}
+
+/* Add more styles for other elements like navigation, footers, etc. */
+/* .navbar { ... } */
+/* .footer { ... } */
+
+/* Example of a hero section (if you have one) */
+/*
+.hero {
+    background-image: url('your-sporty-background-image.jpg');
+    background-size: cover;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    margin-bottom: 20px;
+}
+*/
+
+.login-container {
+    display: flex;
+    height: 100vh; /* Make container take full viewport height */
+}
+
+.login-image-container {
+    flex: 1; /* Allow image container to take remaining space */
+}
+
+.login-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers the area without distortion */
+}

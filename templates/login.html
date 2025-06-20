@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+ <div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+ <div class="card p-4 shadow">
+ <h2 class="card-title text-center mb-4">Login</h2>
+ <form id="login-form">
+ <div class="form-group">
+ <label for="email">Email:</label>
+ <input type="email" id="email" name="email" class="form-control" required>
+ </div>
+ <div class="form-group">
+ <label for="password">Password:</label>
+ <input type="password" id="password" name="password" class="form-control" required>
+ </div>
+ <div class="form-group mt-4">
+ <button type="submit" class="btn btn-primary btn-block">Login</button>
+ </div>
+ </form>
+ <p class="text-center mt-3">Don't have an account? <a href="/register">Register here</a>.</p>
+ </div>
+ </div>
+ <div class="col-md-6">
+ <div class="login-image-container">
+ <img src="{{ url_for('static', filename='placeholder_image.jpg') }}" alt="Login Image" class="img-fluid" style="object-fit: cover;">
+ </div>
+ </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+    </div>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // Firebase configuration (replace with your actual configuration)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfZSXWQxDtrLefwfzLXOC5JB0KFWIuUfA",
+            authDomain: "box-dout.firebaseapp.com",
+            projectId: "box-dout",
+            storageBucket: "box-dout.firebasestorage.app",
+            messagingSenderId: "736778846282",
+            appId: "1:736778846282:web:5ee4dc8868dd794b56a6b3",
+            measurementId: "G-JX7LL1VLS0"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // You would typically add event listeners and authentication logic here
+        // For example, handling the form submission to sign in users with email and password
+    </script>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "cloud_run_deploy": {
+    "region": "australia-southeast2",
+    "sourceFlag": "--source .",
+    "allowUnauthenticatedInvocationsFlag": "--no-allow-unauthenticated"
+  }
+}
