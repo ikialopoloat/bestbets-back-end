@@ -5,20 +5,56 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from firebase_admin import exceptions
+from firebase_admin import firestore
+import google.cloud.secretmanager as secretmanager
 
-from flask import Flask, send_file, jsonify, render_template, request
+import json, google.oauth2.service_account
+from flask import Flask, send_file, jsonify, render_template, request, session
 from flask import redirect, url_for
 app = Flask(__name__)
 
-combined_teams_odds =[]
+app.config['SECRET_KEY'] = 'a_very_secret_key_for_session_management'
 
+combined_teams_odds =[]
+uid = None
 @app.route("/")
 def index():
+
+    ### Enable this for test
+    cred = credentials.Certificate('src/serviceAccountKey.json') # <-- REPLACE WITH YOUR SERVICE ACCOUNT FILE PATH
+    #cred = credentials.Certificate() # <-- REPLACE WITH YOUR SERVICE ACCOUNT FILE PATH
+
+    
+    # print(cred)
+    project_id = "box-dout" # os.environ.get("boxdout")
+    print("this is project ID: ", project_id)
+    secret_name = "serviceAccKey" # Replace with the name of your secret in Secret Manager
+    version_id = "1"
+
+    def access_secret_version(project_id, secret_name, version_id):
+        """
+        Access the payload for the given secret version if one exists. The version
+        can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
+        """
+        client = secretmanager.SecretManagerServiceClient()
+
+        name = "projects/736778846282/secrets/serviceAccKey/versions/1"
+
+        response = client.access_secret_version(request={"name": name})
+
+        payload = response.payload.data.decode("UTF-8")
+        print(payload)
+        return payload
+
     try:
-        cred = credentials.Certificate('src/serviceAccountKey.json') # <-- REPLACE WITH YOUR SERVICE ACCOUNT FILE PATH
+        #### Enable this for Prod. Retrieve the service account key from Secret Manager
+        # service_account_key_json = access_secret_version(project_id, secret_name, version_id)
+        # #cred = google.oauth2.service_account.Credentials.from_service_account_info(json.loads(service_account_key_json))
+        # cred = credentials.Certificate(json.loads(service_account_key_json)) # <-- REPLACE WITH YOUR SERVICE ACCOUNT FILE PATH
+
         firebase_admin.initialize_app(cred)
         print("firebase initialized")
-    except Exception as e:
+    except (exceptions.FirebaseError, Exception) as e:
         print("firebase not initialized:")
         print(e)
     return render_template('login.html')
@@ -33,7 +69,35 @@ def login():
 
 @app.route("/homepage")
 def homepage():
- return render_template('homepage.html')
+    username = None
+    try:
+        # Assuming the user is authenticated and their UID is available
+        # You would typically get the UID from a session or request header
+        # For demonstration, let's assume a UID is available (you'll need to adapt this)
+        # For example, if you store the UID in the session after login:
+        # uid = session.get('user_id')
+
+        # **IMPORTANT:** Replace the following line with how you actually get the authenticated user's UID
+        # For this example, I'll use a placeholder UID. You need to get the real UID of the logged-in user.
+        # You might get this from the verified ID token in a real application.
+        uid = session.get('user_id') # Replace with actual UID retrieval
+
+        db = firestore.client()
+        print(uid)
+        user_ref = db.collection('users').document(uid)
+        user_doc = user_ref.get()
+        print(user_doc)
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            username = user_data.get('username')
+            print(username)
+        else: 
+            print("no user")
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        username = "Guest" # Default name if fetching fails
+
+    return render_template('homepage.html', username=username)
 
 
 
@@ -87,14 +151,17 @@ def dashboard():
 @app.route('/verify-token', methods=['POST'])
 def verify_token():
     id_token = request.json.get('idToken')
-    #print (id_token)
+    print (id_token)
     try:
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = firebase_admin.auth.verify_id_token(id_token)
         uid = decoded_token['uid']
+        session['user_id'] = uid
+
         print("success")
         return jsonify({'message': 'Authenticated successfully', 'uid': uid})
     except Exception as e:
-        print ("error 1")
+        print ("error 1",e)
+        
         return jsonify({'error': str(e)}), 401
 
 @app.route('/protected-resource')
@@ -122,7 +189,7 @@ def protected_resource():
 
 # Replace with your actual API key and the correct endpoint
 # Remember to handle your API key securely and avoid committing it directly into your code.
-API_KEY = "1a165e5a772d74d1fd607c052cabb72a"
+API_KEY = os.environ.get('MY_API_KEY')
 API_ENDPOINT = "https://api.the-odds-api.com/v4/sports/rugbyleague_nrl/odds" # Example endpoint
 
 def get_nrl_odds(api_key, api_endpoint):

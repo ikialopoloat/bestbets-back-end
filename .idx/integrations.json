@@ -3,5 +3,6 @@
     "region": "australia-southeast2",
     "sourceFlag": "--source .",
     "allowUnauthenticatedInvocationsFlag": "--no-allow-unauthenticated"
-  }
+  },
+  "secrets_manager": {}
 }

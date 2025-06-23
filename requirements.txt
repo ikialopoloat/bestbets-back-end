@@ -5,4 +5,5 @@ autopep8
 # App
 flask
 requests
-firebase_admin
+firebase-admin
+google-cloud-secret-manager
