@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Wallet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
 </head>
 <body>
@@ -19,7 +19,7 @@
 					
 				</div>
 				<ul class="menu">
-					<li><a href="#" class="active">
+					<li><a href="#" >
 						<span class="icon"><i class="fas fa-home"></i></span>
 						<span class="text">Home</span>
 					</a></li>
@@ -31,7 +31,7 @@
 						<span class="icon"><i class="fas fa-clipboard-list"></i></span>
 						<span class="text">My Bets</span>
 					</a></li>
-					<li><a href="{{ url_for('wallet_page') }}">
+					<li><a href="{{ url_for('wallet_page') }}" class="active">
 						<span class="icon"><i class="fas fa-wallet"></i></span>
 						<span class="text">Wallet</span>
 					</a></li>
@@ -61,38 +61,26 @@
 			<div class="container">
 				<div class="main-content">
 				<div class="content">
-					<div class="featured-bets">
-						<div class="card">
-							<h3>Featured Bets / Games</h3> 
-							<div class="image-placeholders">
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-							</div>
-						</div>
-					</div>
+					
+        <h1>Your Wallet</h1>
 
-					<div class="popular-matches">
-						<div class="card">
-							<h3>Popular or Trending Matches</h3>
-							<div class="image-placeholders">
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-							</div>
-						</div>
-					</div>
-
-					<div class="promotions">
-						<div class="card">
-							<h3>Promotions / Bonuses</h3>
-						<div class="image-placeholders">
-							<div class="placeholder-image"></div>
-							<div class="placeholder-image"></div>
-							<div class="placeholder-image"></div>
-						</div>
-					</div>
-
+        <p>Current Balance: ${{ balance }}</p>
+        <h2>Transaction History</h2>
+        <ul>
+            {% for transaction in transactions %}
+            <li>{{ transaction.type }} - Amount: ${{ transaction.amount }} - Date: {{ transaction.date }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Deposit</h2>
+        <form action="{{ url_for('deposit') }}" method="post">
+            Amount: <input type="number" name="amount" step="0.01" required>
+            <button type="submit">Deposit</button>
+        </form>
+        <h2>Withdraw</h2>
+        <form action="{{ url_for('withdraw') }}" method="post">
+            Amount: <input type="number" name="amount" step="0.01" required>
+            <button type="submit">Withdraw</button>
+        </form>
 				</div>
 			</div>
 		</div>

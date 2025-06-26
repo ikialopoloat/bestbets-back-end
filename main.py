@@ -99,6 +99,78 @@ def homepage():
 
     return render_template('homepage.html', username=username)
 
+@app.route("/wallet_page")
+def wallet_page():
+        uid = session.get('user_id')
+        if not uid:
+            return redirect(url_for('login'))
+
+        db = firestore.client()
+        user_ref = db.collection('users').document(uid)
+        user_doc = user_ref.get()
+        balance = 0.0
+        if user_doc.exists:
+            balance = user_doc.to_dict().get('balance', 0.0)
+        return render_template('wallet.html', balance=balance)
+@app.route("/deposit", methods=['POST'])
+def deposit():
+    uid = session.get('user_id')
+    if not uid:
+        return jsonify({'error': 'User not authenticated'}), 401
+
+    amount = request.form.get('amount', type=float)
+    if amount is None or amount <= 0:
+        return jsonify({'error': 'Invalid deposit amount'}), 400
+
+    db = firestore.client()
+    user_ref = db.collection('users').document(uid)
+
+    try:
+        user_doc = user_ref.get()
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            current_balance = user_data.get('balance', 0.0)
+            new_balance = current_balance + amount
+            user_ref.update({'balance': new_balance})
+            return redirect(url_for('wallet_page'))
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        print(f"Error depositing funds: {e}")
+        return jsonify({'error': 'Failed to process deposit'}), 500
+
+@app.route("/withdraw", methods=['POST'])
+def withdraw():
+    uid = session.get('user_id')
+    if not uid:
+        return jsonify({'error': 'User not authenticated'}), 401
+
+    amount = request.form.get('amount', type=float)
+    if amount is None or amount <= 0:
+        return jsonify({'error': 'Invalid withdrawal amount'}), 400
+
+    db = firestore.client()
+    user_ref = db.collection('users').document(uid)
+
+    try:
+        user_doc = user_ref.get()
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            current_balance = user_data.get('balance', 0.0)
+
+            if current_balance < amount:
+                return jsonify({'error': 'Insufficient funds'}), 400
+
+            new_balance = current_balance - amount
+            user_ref.update({'balance': new_balance})
+            return redirect(url_for('wallet_page'))
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        print(f"Error withdrawing funds: {e}")
+        return jsonify({'error': 'Failed to process withdrawal'}), 500
+
+
 
 
 @app.route("/mainpage")
