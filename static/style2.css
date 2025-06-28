@@ -11,12 +11,20 @@
 }
 
 /* Add styles for the new card class */
+.form-container {
+ display: flex;
+ justify-content: center;
+}
+
 .card {
-    width: 90%;
-    height: 200px;
     border: 1px solid #ccc;
     margin: 10px auto;
     padding: 10px;
+ min-width: 300px;
+ max-width: 500px;
+ width: 90%;
+ box-sizing: border-box;
+    height: auto; /* Adjusted height to fit content */
     box-sizing: border-box;
     border-radius: 8px; /* Rounded edges */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Slight shadow */
@@ -211,4 +219,11 @@ body{
 		left: 0;
 		transition: left 0.2s linear;
 	}
+}
+
+/* New style for the balance heading */
+.balance-heading {
+    text-align: center;
+    font-size: 3em; /* Adjust the font size as needed */
+    color: #c99c33; /* A color that fits the scheme, like the title color */
 }

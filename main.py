@@ -100,6 +100,48 @@ def homepage():
     return render_template('homepage.html', username=username)
 
 
+@app.route("/wallet_page")
+def wallet_page():
+ if 'user_id' not in session:
+    return redirect(url_for('login')) # Redirect to login if not authenticated
+
+ uid = session['user_id']
+ db = firestore.client()
+ user_ref = db.collection('users').document(uid)
+ user_doc = user_ref.get()
+ if user_doc.exists:
+    user_data = user_doc.to_dict()
+    balance = user_data.get('balance', 0) # Default to 0 if balance is not set
+    return render_template('wallet_page.html', balance=balance)
+ return render_template('wallet_page.html', balance=0) # Render with 0 if user doc doesn't exist
+
+
+@app.route('/deposit', methods=['POST'])
+def deposit():
+ if 'user_id' not in session:
+    return redirect(url_for('login'))
+
+ try:
+    deposit_amount = float(request.form.get('deposit_amount'))
+    if deposit_amount <= 0:
+        return redirect(url_for('wallet_page')) # Or show an error message
+
+    uid = session['user_id']
+    db = firestore.client()
+    user_ref = db.collection('users').document(uid)
+    user_doc = user_ref.get()
+
+    if user_doc.exists:
+        user_data = user_doc.to_dict()
+        current_balance = user_data.get('balance', 0)
+        new_balance = current_balance + deposit_amount
+        user_ref.update({'balance': new_balance})
+
+ except ValueError:
+ # Handle non-numeric input
+    pass # Or show an error message to the user
+
+ return redirect(url_for('wallet_page'))
 
 @app.route("/mainpage")
 def mainpage():
@@ -126,7 +168,7 @@ def mainpage():
                 # You can now process and use the 'nrl_odds_data' as needed
 
 
-                # For example, you could pass this data to a template or store it
+ # For example, you could pass this data to a template or store it
             print("Combined Teams and Odds:", combined_teams_odds)
 
         return render_template('index.html', data=combined_teams_odds)
