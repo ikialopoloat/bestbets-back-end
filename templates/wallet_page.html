@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+ <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
@@ -14,12 +14,12 @@
 			<div class="vertical_bar">
 				<div class="profile_info">
 					<div class="img_holder">
-						<h2>Welcome {{ username }}</h2>
+ <h2>Welcome {{ username }}</h2>
 					</div>
 					
 				</div>
 				<ul class="menu">
-					<li><a href="#" class="active">
+					<li><a href="#" >
 						<span class="icon"><i class="fas fa-home"></i></span>
 						<span class="text">Home</span>
 					</a></li>
@@ -31,8 +31,7 @@
 						<span class="icon"><i class="fas fa-clipboard-list"></i></span>
 						<span class="text">My Bets</span>
 					</a></li>
-					<li><a href="{{ url_for('wallet_page') }}
-">
+					<li><a href="#" class="active">
 						<span class="icon"><i class="fas fa-wallet"></i></span>
 						<span class="text">Wallet</span>
 					</a></li>
@@ -62,38 +61,18 @@
 			<div class="container">
 				<div class="main-content">
 				<div class="content">
-					<div class="featured-bets">
-						<div class="card">
-							<h3>Featured Bets / Games</h3> 
-							<div class="image-placeholders">
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-							</div>
-						</div>
-					</div>
-
-					<div class="popular-matches">
-						<div class="card">
-							<h3>Popular or Trending Matches</h3>
-							<div class="image-placeholders">
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-								<div class="placeholder-image"></div>
-							</div>
-						</div>
-					</div>
-
-					<div class="promotions">
-						<div class="card">
-							<h3>Promotions / Bonuses</h3>
-						<div class="image-placeholders">
-							<div class="placeholder-image"></div>
-							<div class="placeholder-image"></div>
-							<div class="placeholder-image"></div>
-						</div>
-					</div>
-
+                    <h1 class="balance-heading">Current Balance: K{{ balance }}</h1>
+                    <div class="deposit-container">
+                    <div class="deposit-card">
+                    <h2>Make a Deposit</h2>
+                    <form action="{{ url_for('deposit') }}" method="post">
+                    <div class="form-group">
+                    <label for="deposit_amount">Amount:</label>
+                    <input type="number" id="deposit_amount" name="deposit_amount" step="0.01" min="0.01" required>
+                    </div>
+                    <button type="submit" class="btn-deposit">Deposit</button>
+                    </form>
+                    </div>
 				</div>
 			</div>
 		</div>
