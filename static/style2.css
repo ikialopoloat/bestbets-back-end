@@ -227,3 +227,13 @@ body{
     font-size: 3em; /* Adjust the font size as needed */
     color: #c99c33; /* A color that fits the scheme, like the title color */
 }
+
+/* Style for the deposit button */
+.btn-deposit {
+    width: 100%; /* Make the button wider */
+    padding: 10px; /* Adjust padding as needed */
+ background-color: #c99c33; /* Match existing color scheme */
+ border-radius: 8px; /* Rounded edges */
+    padding: 8px; /* 8px padding all around */
+    font-size: 0.5em; /* 50% smaller */
+}
