@@ -10,8 +10,9 @@ import google.cloud.secretmanager as secretmanager
 
 import json, google.oauth2.service_account
 from flask import Flask, send_file, jsonify, render_template, request, session
-from flask import redirect, url_for
+from flask import redirect, url_for, g
 app = Flask(__name__)
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app.config['SECRET_KEY'] = 'a_very_secret_key_for_session_management'
 
@@ -98,6 +99,38 @@ def homepage():
         username = "Guest" # Default name if fetching fails
 
     return render_template('homepage.html', username=username)
+
+@app.route("/market")
+def market():
+    return render_template('market.html')
+
+
+def daily_task():
+    with app.app_context():
+        """Fetches NRL odds and stores them in Firestore."""
+        print("Running daily task to fetch NRL odds...")
+    
+        # Ensure Firestore client is initialized
+        if not hasattr(g, 'firestore_db'):
+            # You might need to re-initialize Firebase here or ensure it's done elsewhere globally
+            # For demonstration, let's assume Firebase is initialized when the app starts
+            # and you can access the client. In a real application, manage this carefully.
+            try:
+                db = firestore.client()
+                g.firestore_db = db
+            except Exception as e:
+                print(f"Error initializing Firestore client in daily task: {e}")
+                return # Exit if Firestore client cannot be obtained
+        
+        db = g.firestore_db
+        
+        nrl_odds_data = get_nrl_odds(API_KEY, API_ENDPOINT)
+        if nrl_odds_data:
+            # Store the fetched data in a Firestore collection, e.g., 'nrl_odds'
+            # You'll need to decide on the structure of your Firestore documents.
+            db.collection('nrl_odds').add({'timestamp': firestore.SERVER_TIMESTAMP, 'data': nrl_odds_data})
+            print("NRL odds fetched and stored successfully!")
+
 
 
 @app.route("/wallet_page")
@@ -252,6 +285,10 @@ def get_nrl_odds(api_key, api_endpoint):
     return None
 
 def main():
+    # Schedule the daily task
+    scheduler = BackgroundScheduler(timezone='Pacific/Port_Moresby')
+    scheduler.add_job(daily_task, 'cron', hour=23, minute=34) # Run at 6am every day
+    scheduler.start()
     app.run(port=int(os.environ.get('PORT', 5000)))
 
 if __name__ == "__main__":
